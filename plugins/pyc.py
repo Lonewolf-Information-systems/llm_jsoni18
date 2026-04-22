@@ -1,8 +1,10 @@
+#plugins/pyc.py 
 import importlib.util
 import pathlib
 import sys
 import compileall
-compileall.compile_dir(str(PLUGIN_DIR), force=False)
+compileall.compile_dir(str(PLUGIN_DIR), force=False) 
+#### py to pyc for some speedup
 
 PLUGIN_DIR = pathlib.Path(__file__).parent
 
