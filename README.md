@@ -54,7 +54,7 @@ units = list(json_to_units(obj, lang_src="en"))
 
 # Attach target language
 for u in units:
-    u["lang_tgt"] = "mia"
+    u["lang_tgt"] = ""
 
 backend = load_backend("claude")   # reads ANTHROPIC_API_KEY
 translated = list(backend.translate_batch(units))
