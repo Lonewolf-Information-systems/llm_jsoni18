@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-jsoni18"
+version = "0.1.0"
+description = "LLM-aware i18n middleware (TMX ⇄ JSON ⇄ JSONL) with streaming and automatic format transmogrification"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+  { name = "Michael R. Lawrence" }
+]
+keywords = ["i18n", "l10n", "tmx", "jsonl", "llm", "translation", "localization"]
+requires-python = ">=3.10"
+
+dependencies = [
+  "orjson>=3.9",
+]
+
+# Optional feature sets (install only what you need)
+[project.optional-dependencies]
+
+# TMX / PO / XLIFF support via translate-toolkit
+tmx = [
+  "translate-toolkit>=3.10.0"
+]
+
+# HTTP client for LLM backends (Ollama/OpenAI-compatible)
+llm = [
+  "httpx>=0.27"
+]
+
+# Faster CLI UX
+cli = [
+  "rich>=13.0"
+]
+
+# Dev tools
+dev = [
+  "pytest",
+  "pytest-cov",
+  "ruff",
+  "mypy"
+]
+
+[project.urls]
+Homepage = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/"
+Repository = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/new/main"
+Issues = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/issues"
+
+[project.scripts]
+llm-jsoni18 = "llm_jsoni18.cli:main"
+
+---
+
+# 🧪 Tooling (lint / type / test)
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+[tool.pytest.ini_options]
+addopts = "-ra -q"
+testpaths = ["tests"]
+
+---
+
+# 📦 Hatch build config
+
+[tool.hatch.build]
+packages = ["src/llm_jsoni18"]
+
+[tool.hatch.version]
+path = "src/llm_jsoni18/__init__.py"
