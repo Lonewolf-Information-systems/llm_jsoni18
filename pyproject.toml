@@ -118,3 +118,6 @@ keywords = [
 default_mode = "auto"
 stream_threshold = 5000
 repair = true
+[project.entry-points."llm_jsoni18.backends"]
+ollama = "llm_jsoni18.backends.ollama:OllamaBackend"
+openai = "llm_jsoni18.backends.openai:OpenAIBackend"
