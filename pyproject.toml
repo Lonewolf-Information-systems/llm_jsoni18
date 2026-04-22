@@ -1,123 +1,135 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# llm-jsoni18 — pyproject.toml
+# Build back-end: hatchling (always required)
+# Optional build plugins: hatch-cythonize, hatch-pyinstaller
+#   cx_Freeze has no hatch plugin — invoked directly via cxfreeze CLI / setup.py
+# ──────────────────────────────────────────────────────────────────────────────
+
 [build-system]
-requires = ["hatchling"]
+requires = [
+  "hatchling",
+  # Uncomment to enable Cython .py → .so compilation at build time:
+  # "hatch-cythonize>=0.3.0",
+  # Uncomment to enable PyInstaller one-file bundle at build time:
+  # "hatch-pyinstaller>=1.8.0",
+]
 build-backend = "hatchling.build"
 
+
+# ── Project metadata ──────────────────────────────────────────────────────────
+
 [project]
-name = "llm-jsoni18"
-version = "0.1.0"
-description = "LLM-aware i18n middleware (TMX ⇄ JSON ⇄ JSONL) with streaming and automatic format transmogrification"
-readme = "README.md"
-license = {text = "MIT"}
-authors = [
-  { name = "Michael R. Lawrence" }
-]
-keywords = ["i18n", "l10n", "tmx", "jsonl", "llm", "translation", "localization"]
+name            = "llm-jsoni18"
+version         = "0.1.0"
+description     = "Format-agnostic i18n ↔ LLM middleware — round-trips i18n-JSON, JSONL, TMX, PO via pluggable LLM backends"
+readme          = "README.md"
+license         = { text = "MIT" }
+authors         = [{ name = "Michael R. Lawrence" }]
 requires-python = ">=3.10"
+keywords        = ["i18n", "l10n", "tmx", "jsonl", "llm", "translation", "localization", "myaamia", "algonquian"]
 
+# Runtime — keep minimal; extras pull in optional heavyweights
 dependencies = [
-  "orjson>=3.9",
-]
-
-# Optional feature sets (install only what you need)
-[project.optional-dependencies]
-
-# TMX / PO / XLIFF support via translate-toolkit
-tmx = [
-  "translate-toolkit>=3.10.0"
-]
-
-# HTTP client for LLM backends (Ollama/OpenAI-compatible)
-llm = [
-  "httpx>=0.27"
-]
-
-# Faster CLI UX
-cli = [
-  "rich>=13.0"
-]
-
-# Dev tools
-dev = [
-  "pytest",
-  "pytest-cov",
-  "ruff",
-  "mypy"
+  "orjson>=3.9",   # fast JSON (stdlib json is the fallback)
+  "click>=8.0",    # CLI
 ]
 
 [project.urls]
-Homepage = "https://github.com/Lonewolf-Information-systems/llm_jsoni18"
+Homepage   = "https://github.com/Lonewolf-Information-systems/llm_jsoni18"
 Repository = "https://github.com/Lonewolf-Information-systems/llm_jsoni18"
-Issues = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/issues"
-
+Issues     = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/issues"
 
 [project.scripts]
-llm-jsoni18 = "llm_jsoni18.cli:main"
+i18n-conv   = "llm_jsoni18.cli:main"
+llm-jsoni18 = "llm_jsoni18.cli:main"   # legacy alias
 
----
 
-# 🧪 Tooling (lint / type / test)
+# ── Optional feature sets ─────────────────────────────────────────────────────
+
+[project.optional-dependencies]
+
+# l10n format support
+tmx     = ["translate-toolkit>=3.10.0"]
+
+# LLM backends
+llm     = ["httpx>=0.27"]
+openai  = ["openai>=1.0.0"]
+claude  = ["anthropic>=0.25.0"]
+
+# CLI polish
+cli     = ["rich>=13.0"]
+
+# ── Binary distribution tools (NOT hatch build-plugins) ──────────────────────
+# Install whichever you need to BUILD a standalone binary:
+#
+#   pip install "llm-jsoni18[pyinstaller]"   → one-file exe
+#   pip install "llm-jsoni18[cx_freeze]"     → msi/zip (no hatch plugin exists)
+#   pip install "llm-jsoni18[cython]"        → .so speedups
+pyinstaller = ["pyinstaller>=6.0"]
+cx_freeze   = ["cx_Freeze>=7.0"]
+cython      = ["Cython>=3.0"]
+
+# Dev / CI
+dev = ["pytest", "pytest-cov", "ruff", "mypy", "hatch"]
+
+# Kitchen-sink
+all = ["llm-jsoni18[tmx,llm,openai,claude,cli]"]
+
+
+# ── Plugin entry-points ───────────────────────────────────────────────────────
+
+[project.entry-points."llm_jsoni18.backends"]
+ollama  = "llm_jsoni18.plugins.ollama:OllamaBackend"
+claude  = "llm_jsoni18.plugins.claude_ai:ClaudeBackend"
+openai  = "llm_jsoni18.plugins.openai_be:OpenAIBackend"
+noop    = "llm_jsoni18.plugins.noop:NoopBackend"
+
+[project.entry-points."llm_jsoni18.formats"]
+i18n-json = "llm_jsoni18.formats.i18n_json:I18nJsonFormat"
+jsonl     = "llm_jsoni18.formats.jsonl_fmt:JsonlFormat"
+tmx       = "llm_jsoni18.formats.tmx_fmt:TmxFormat"
+po        = "llm_jsoni18.formats.po_fmt:PoFormat"
+
+
+# ── Hatch build config ────────────────────────────────────────────────────────
+
+[tool.hatch.build]
+packages = ["llm_jsoni18"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["llm_jsoni18"]
+
+# hatch-cythonize — add "hatch-cythonize>=0.3.0" to build-system.requires first
+# [tool.hatch.build.hooks.cythonize]
+# src = ["llm_jsoni18/core.py", "llm_jsoni18/formats/*.py"]
+
+# hatch-pyinstaller — add "hatch-pyinstaller>=1.8.0" to build-system.requires first
+# [tool.hatch.build.hooks.pyinstaller]
+# scripts = ["llm_jsoni18/cli.py"]
+# onefile = true
+# name    = "i18n-conv"
+
+[tool.hatch.version]
+path = "llm_jsoni18/__init__.py"
+
+
+# ── Tooling ───────────────────────────────────────────────────────────────────
 
 [tool.ruff]
-line-length = 100
+line-length    = 100
 target-version = "py310"
 
 [tool.mypy]
 python_version = "3.10"
-strict = true
+strict         = true
 
 [tool.pytest.ini_options]
-addopts = "-ra -q"
+addopts   = "-ra -q"
 testpaths = ["tests"]
 
----
-
-# 📦 Hatch build config
-
-[tool.hatch.build]
-packages = ["src/llm_jsoni18"]
-
-[tool.hatch.version]
-path = "src/llm_jsoni18/__init__.py"
-[project.optional-dependencies]
-
-# existing
-tmx = ["translate-toolkit>=3.10.0"]
-llm = ["httpx>=0.27"]
-openai = ["openai>=1.0.0"]
-
-# 🔥 Packaging / distribution targets
-
-pyinstaller = [
-  "pyinstaller>=6.0"
-]
-
-cx_freeze = [
-  "cx_Freeze>=6.15"
-]
-
-cython = [
-  "cython>=3.0"
-]
-
-# hatch plugins (build-time)
-hatch = [
-  "hatch-pyinstaller>=1.8.0",
-  "hatch-cythonize>=0.3.0"
-]
-
-keywords = [
-  "i18n",
-  "l10n",
-  "tmx",
-  "jsonl",
-  "llm",
-  "translation",
-  "localization"
-]
+# ── llm-jsoni18 runtime config (read by llm_jsoni18/config.py) ───────────────
 [tool.llm-jsoni18]
-default_mode = "auto"
-stream_threshold = 5000
-repair = true
-[project.entry-points."llm_jsoni18.backends"]
-ollama = "llm_jsoni18.backends.ollama:OllamaBackend"
-openai = "llm_jsoni18.backends.openai:OpenAIBackend"
+default_mode     = "auto"   # auto-detect input format
+stream_threshold = 5000     # chars above which streaming is preferred
+repair           = true     # attempt JSON repair on malformed input
+pyc_plugins      = true     # prefer __pycache__ .pyc over .py source
