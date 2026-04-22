@@ -45,9 +45,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/"
-Repository = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/new/main"
+Homepage = "https://github.com/Lonewolf-Information-systems/llm_jsoni18"
+Repository = "https://github.com/Lonewolf-Information-systems/llm_jsoni18"
 Issues = "https://github.com/Lonewolf-Information-systems/llm_jsoni18/issues"
+
 
 [project.scripts]
 llm-jsoni18 = "llm_jsoni18.cli:main"
@@ -77,3 +78,43 @@ packages = ["src/llm_jsoni18"]
 
 [tool.hatch.version]
 path = "src/llm_jsoni18/__init__.py"
+[project.optional-dependencies]
+
+# existing
+tmx = ["translate-toolkit>=3.10.0"]
+llm = ["httpx>=0.27"]
+openai = ["openai>=1.0.0"]
+
+# 🔥 Packaging / distribution targets
+
+pyinstaller = [
+  "pyinstaller>=6.0"
+]
+
+cx_freeze = [
+  "cx_Freeze>=6.15"
+]
+
+cython = [
+  "cython>=3.0"
+]
+
+# hatch plugins (build-time)
+hatch = [
+  "hatch-pyinstaller>=1.8.0",
+  "hatch-cythonize>=0.3.0"
+]
+
+keywords = [
+  "i18n",
+  "l10n",
+  "tmx",
+  "jsonl",
+  "llm",
+  "translation",
+  "localization"
+]
+[tool.llm-jsoni18]
+default_mode = "auto"
+stream_threshold = 5000
+repair = true
