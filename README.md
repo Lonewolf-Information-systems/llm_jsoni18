@@ -10,9 +10,12 @@ i18n-JSON ──┐
 TMX ────────┘                                               TMX / JSONL / PO
 
 Install
-bashpip install llm-jsoni18                        # core (Ollama + Claude + noop)
-pip install "llm-jsoni18[toolkit]"             # + translate-toolkit (PO/TMX via cli)
-pip install "llm-jsoni18[openai]"              # + OpenAI backend
+bashpip install llm-jsoni18                        
+# core (Ollama + Claude + noop)
+pip install "llm-jsoni18[toolkit]"             
+# + translate-toolkit (PO/TMX via cli)
+pip install "llm-jsoni18[openai]"              
+# + OpenAI backend
 
 CLI — i18n-conv
 Round-trip: i18n-JSON → JSONL
