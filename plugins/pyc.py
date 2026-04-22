@@ -1,6 +1,8 @@
 import importlib.util
 import pathlib
 import sys
+import compileall
+compileall.compile_dir(str(PLUGIN_DIR), force=False)
 
 PLUGIN_DIR = pathlib.Path(__file__).parent
 
