@@ -19,8 +19,7 @@ pip install "llm-jsoni18[openai]"
 
 CLI — i18n-conv
 Round-trip: i18n-JSON → JSONL
-bashcat en.json | i18n-conv
-# {"id": "app.title", "source": "Hello", "target": "", "lang_src": "en"}
+bashcat en.json | i18n-conv # {"id": "app.title", "source": "Hello", "target": "", "lang_src": "en"}
 # ...
 Round-trip: JSONL → i18n-JSON
 bashcat units.jsonl | i18n-conv --from jsonl --to i18n-json
